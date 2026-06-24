@@ -69,6 +69,9 @@ controls:
     configuration_profiles:
       - paths: ../platforms/macos/declaration-profiles/*.json
       - paths: ../platforms/macos/configuration-profiles/*.mobileconfig
+      - paths: ../platforms/macos/configuration-profiles/disable-bluetooth-file-sharing.mobileconfig
+        labels_include_all:
+          - Department - Engineering
   windows_settings:
     configuration_profiles:
       - paths: ../platforms/windows/configuration-profiles/*.xml
@@ -82,8 +85,8 @@ controls:
   # Read more here:
   #   • https://fleetdm.com/guides/enforce-disk-encryption
   ###########################################################
-  # enable_disk_encryption: true
-
+  enable_disk_encryption: true
+  enable_recovery_lock_password: true
   ###########################################################
   # Managed OS updates
   #
@@ -95,10 +98,10 @@ controls:
   #   • https://fleetdm.com/docs/configuration/yaml-files#windows-updates
   #   • https://fleetdm.com/guides/enforce-os-updates
   ###########################################################
-  # macos_updates:
-  #   deadline: "2030-04-01"
-  #   minimum_version: "26.0"
-  #   update_new_hosts: true
+  macos_updates:
+    deadline: "2030-04-01"
+    minimum_version: "26.0"
+    update_new_hosts: true
   # windows_updates:
   #   deadline_days: 7
   #   grace_period_days: 2
@@ -184,7 +187,12 @@ software:
   packages: # Custom packages (if any)
     # macOS custom packages
     # …
-
+    - path: ../platforms/macos/software/zoom.yml
+      self_service: true
+      setup_experience: true
+      categories:
+        - Communication
+        
     # Windows custom packages
     # …
 
@@ -193,3 +201,9 @@ software:
 
   app_store_apps: # Apps to install via VPP from the macOS App Store, if any
     # …
+server_settings:
+  webhook_settings:
+    failing_policies_webhook:
+      enable_failing_policies_webhook: true
+      destination_url: https://webhook.site/5e71d5a2-7a7b-446a-8bd5-ebbd8f5d0fec
+      host_batch_size: 0
